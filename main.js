@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Detecta o ambiente para construir a URL da API corretamente
     const getApiBaseUrl = () => {
         const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        // Em dev, aponta para o servidor unificado. Em prod, usa um caminho relativo para o mesmo host.
-        return isDevelopment ? 'http://localhost:3000/cronograma' : '/cronograma';
+        // Aponta para o servidor unificado em dev, e para a URL de produção do Render.com em prod.
+        return isDevelopment ? 'http://localhost:3000/cronograma' : 'https://profalexv-alexluza.onrender.com/cronograma';
     };
 
     // --- Lógica para fazer login via API ---
