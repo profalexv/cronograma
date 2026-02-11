@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Se não houver informações do usuário, ele não está "logado"
         // Redireciona de volta para a página de login
         alert('Nenhuma sessão ativa encontrada. Por favor, faça o login.');
-        window.location.href = '../index.html';
+        window.location.href = 'index.html';
     } else {
         // Se as informações existirem, podemos usá-las para personalizar a página
         const userInfo = JSON.parse(userInfoString);

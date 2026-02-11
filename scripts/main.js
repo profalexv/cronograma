@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-button');
-    const createSessionForm = document.getElementById('create-session-form');
+
+    // --- Elementos para o formulário de cadastro ---
+    const showRegisterButton = document.getElementById('show-register-form-button');
+    const registerSection = document.getElementById('register-section');
+    const registerForm = document.getElementById('register-form');
+    const cancelRegisterButton = document.getElementById('cancel-register-button');
+    const loginSection = document.getElementById('login-section'); // A seção de login que será ocultada
 
     // Detecta o ambiente para construir a URL da API corretamente
     const getApiBaseUrl = () => {
-        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
         // Aponta para o servidor unificado em dev, e para a URL de produção do Render.com em prod.
-        return isDevelopment ? 'http://localhost:3000/cronograma' : 'https://profalexv-alexluza.onrender.com/cronograma';
+        return isLocal ? 'http://localhost:3000/cronograma' : 'https://profalexv-alexluza.onrender.com/cronograma';
     };
 
     // --- Lógica para fazer login via API ---
@@ -70,6 +76,71 @@ document.addEventListener('DOMContentLoaded', () => {
             loginButton.click();
         }
     });
+
+    // --- Lógica para o cadastro de Super Admin ---
+
+    if (showRegisterButton && registerSection && registerForm && cancelRegisterButton) {
+        // Mostrar o formulário de cadastro e esconder o de login
+        showRegisterButton.addEventListener('click', () => {
+            registerSection.style.display = 'block';
+            showRegisterButton.style.display = 'none';
+            if (loginSection) {
+                loginSection.style.display = 'none';
+            }
+        });
+
+        // Cancelar e voltar para o login
+        cancelRegisterButton.addEventListener('click', () => {
+            registerSection.style.display = 'none';
+            showRegisterButton.style.display = 'block';
+            if (loginSection) {
+                loginSection.style.display = 'block';
+            }
+        });
+
+        // Enviar o formulário de cadastro
+        registerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('register-name').value;
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+
+            if (!name || !username || !password) {
+                alert('Todos os campos (nome, usuário e senha) são obrigatórios.');
+                return;
+            }
+
+            const submitButton = registerForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Cadastrando...';
+
+            fetch(`${getApiBaseUrl()}/api/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, username, password, role: 'superadmin' }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message || 'Erro ao cadastrar') });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message || 'Usuário cadastrado com sucesso! Agora você pode fazer o login.');
+                cancelRegisterButton.click(); // Volta para a tela de login
+                registerForm.reset(); // Limpa o formulário
+            })
+            .catch(error => {
+                alert(`Falha no cadastro: ${error.message}`);
+                console.error('Erro no cadastro:', error);
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Cadastrar';
+            });
+        });
+    }
 
     // A lógica de "Criar Nova Sessão" também precisará ser adaptada.
     // Em vez de criar um arquivo JSON, ela fará uma requisição para um endpoint
