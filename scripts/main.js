@@ -11,8 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica para fazer login via API ---
     loginButton.addEventListener('click', () => {
-        // Esta lógica mudou completamente. Agora pegamos os dados de campos de texto.
-        // Supondo que você tenha campos com id 'username' e 'password' no seu HTML de login.
+        // Pega os dados dos campos de texto.
         const usernameInput = document.getElementById('superadmin-username-login'); // Você precisará adicionar este campo no HTML
         const passwordInput = document.getElementById('superadmin-password-login');
 
@@ -23,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Por favor, insira o usuário e a senha.');
             return;
         }
+
+        // Desabilita o botão para feedback visual e para evitar cliques duplos
+        loginButton.disabled = true;
+        loginButton.textContent = 'Entrando...';
 
         // Faz uma requisição POST para o nosso backend
         fetch(`${getApiBaseUrl()}/api/login`, {
@@ -47,15 +50,27 @@ document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('userInfo', JSON.stringify(data.user));
             
             // Redireciona para a página de configuração
-            window.location.href = 'pages/config.html';
+            window.location.href = 'config.html';
         })
         .catch(error => {
             // Se houver um erro de rede ou de autenticação
             alert(`Falha no login: ${error.message}`);
             console.error('Erro no login:', error);
+        })
+        .finally(() => {
+            // Reabilita o botão independentemente do resultado
+            loginButton.disabled = false;
+            loginButton.textContent = 'Entrar';
         });
     });
     
+    // Adiciona a funcionalidade de login com a tecla "Enter"
+    document.getElementById('superadmin-password-login').addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            loginButton.click();
+        }
+    });
+
     // A lógica de "Criar Nova Sessão" também precisará ser adaptada.
     // Em vez de criar um arquivo JSON, ela fará uma requisição para um endpoint
     // como POST /api/setup ou POST /api/schools para registrar uma nova escola no banco de dados.

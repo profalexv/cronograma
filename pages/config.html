@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
     <title>Cronograma - Configuração</title>
-    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body class="centered-layout">
     <div class="container">
@@ -17,12 +17,12 @@
         <button id="logout-button">Sair</button>
     </div>
 
-    <script src="../scripts/config.js"></script>
+    <script src="config.js"></script>
     <script>
         // Simple logout logic
         document.getElementById('logout-button').addEventListener('click', () => {
             sessionStorage.removeItem('userInfo');
-            window.location.href = '../index.html';
+            window.location.href = 'index.html';
         });
     </script>
 </body>
