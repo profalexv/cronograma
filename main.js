@@ -2,6 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-button');
     const createSessionForm = document.getElementById('create-session-form');
 
+    // Detecta o ambiente para construir a URL da API corretamente
+    const getApiBaseUrl = () => {
+        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        // Em dev, aponta para o servidor unificado. Em prod, usa um caminho relativo para o mesmo host.
+        return isDevelopment ? 'http://localhost:3000/cronograma' : '/cronograma';
+    };
+
     // --- Lógica para fazer login via API ---
     loginButton.addEventListener('click', () => {
         // Esta lógica mudou completamente. Agora pegamos os dados de campos de texto.
@@ -18,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Faz uma requisição POST para o nosso backend
-        fetch('http://localhost:3001/api/login', {
+        fetch(`${getApiBaseUrl()}/api/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
